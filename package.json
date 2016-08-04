@@ -1,0 +1,26 @@
+{
+  "name": "dynamo-api",
+  "version": "0.0.1",
+  "author": "ben martin",
+  "scripts": {
+    "start": "npm start",
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.4.11",
+    "body-parser": "^1.15.2",
+    "chai": "^3.5.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "express": "~4.13.4",
+    "jade": "~1.11.0",
+    "mocha": "^3.0.0",
+    "morgan": "~1.7.0",
+    "serve-favicon": "~2.3.0"
+  },
+  "repository": "https://github.com/Ben-Martin/dynamo-db.git",
+  "description": "a basic api using dynamo-db as the backend",
+  "devDependencies": {
+    "nodemon": "^1.10.0"
+  }
+}
