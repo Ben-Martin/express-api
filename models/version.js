@@ -7,14 +7,10 @@ function ApiVersion(version, datetime) {
     return this;
 }
 
-function VersionTable() {
-    return db.versionTable;
-}
-
 function GetVersion (callback) {
 
     var params = {
-        TableName : VersionTable()
+        TableName : db.versionTable()
     };
 
     db.dbClient.scan(params, function(err, data) {
@@ -45,7 +41,7 @@ function SetVersion (version, callback) {
     var ver = new ApiVersion(version, datetime);
 
     var params = {
-        TableName: VersionTable(),
+        TableName: db.versionTable(),
         Item:{
             "version": round(version, 2),
             "datetime": datetime

@@ -2,9 +2,7 @@
 
 /*
 TODO: list
-    Move AWS configuration to the global config
     correct handling of errors inc. from db
-    extract the db methods
     correct format of datetime in the response
     add a count filter
     add callback functionality to the SaveLocations method
@@ -14,15 +12,6 @@ TODO: list
 
 var db = require('./../config/database').init();
 
-function Locationtable() {
-    return db.locationsTable;
- }
-
-// user object - this should be a global object based on identity
-function User(user_guid) {
-    this.user_guid = user_guid;
-    return this;
-}
 
 // location object
 function Location(longitude, latitude, speed, course, altitude, timestamp, true_heading, magnetic_heading, heading_accuracy) {
@@ -52,7 +41,7 @@ function GetLocations(user, startDate, endDate, callback) {
     var epochEndDate = GetEpoch(endDate);
 
     var params = {
-        TableName : Locationtable(),
+        TableName : db.locationsTable(),
         KeyConditionExpression: "user_guid = :user_guid and #dstamp between :startDate and :endDate",
         ExpressionAttributeNames:{
             "#dstamp": "datetime"
@@ -88,7 +77,7 @@ SaveLocations = function(user, location) {
     console.log('adding item : ' + date);
 
     var params = {
-        TableName:Locationtable(),
+        TableName: db.locationsTable(),
         Item:{
             "user_guid": user, // pull this from a token
             "datetime": date,
@@ -106,24 +95,27 @@ SaveLocations = function(user, location) {
         }
     };
 
-    db.dbClient.put(params, function(err, data) {
+    db.dbClient.put(params, function(err, data, callback) {
         if (err) {
-            console.log("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-            return false;
+            callback(err);
         } else {
             console.log("Added item:", JSON.stringify(data, null, 2));
-            return true;
+            callback(data);
         }
     });
-    return true; // this needs to be validated
+
 };
 
+
+/**
+ * Get a Unix time stamp
+ * @param {date} date datetime to be converted to an epoch
+ */
 function GetEpoch (date) {
     return Math.floor((new Date(date)).getTime()/1000);
 }
 
 module.exports = {
-    user: User,
     location: Location,
     getLocations: GetLocations,
     saveLocations: SaveLocations

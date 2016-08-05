@@ -1,8 +1,9 @@
 var express = require('express'),
     router = express.Router(),
-    location = require('../models/Location.js'),
+    location = require('./../models/Location.js'),
     bodyParser = require('body-parser'),
-    cfg = require('../config');
+    cfg = require('../config'),
+    userModel = require('./../models/User');
 
 // Get locations based on date range
 router.get('/', function(req, res, next) {
@@ -14,7 +15,9 @@ router.get('/', function(req, res, next) {
         });
     }
     else {
-        location.getLocations(req.query.user_guid, req.query.startDate, req.query.endDate, onComplete);
+
+        var user = userModel.user('abc123');
+        location.getLocations(user, req.query.startDate, req.query.endDate, onComplete);
     }
 
     function onComplete(data) { // When the code completes, do this

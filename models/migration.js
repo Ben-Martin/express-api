@@ -1,23 +1,20 @@
-var AWS = require("aws-sdk");
-var cfg = require("./../config");
 
-AWS.config.update({
-    region:cfg.region,
-    endpoint: cfg.endpoint
-});
 
-var docClient = new AWS.DynamoDB.DocumentClient();
+// var docClient = new AWS.DynamoDB.DocumentClient();
 
 /**
  * Create tables
  */
-var dynamodb = new AWS.DynamoDB();
+// var dynamodb = new AWS.DynamoDB();
+
+
+var db = require('./../config/database').init();
 
 var logName = 'MIGRATION : ';
 
 CreateVersionTable = function(callback) {
 
-    var tableName = 'Version';
+    var tableName = db.versionTable();
 
     console.log(logName + 'deleting table ' + tableName);
     DeleteTable(tableName);
@@ -75,9 +72,15 @@ CreateLocationsTable = function() {
     
 };
 
+/**
+ * Create a table
+ * @param {string}   table    table name
+ * @param {Params}   params   detail for the table to be created
+ * @param {Function} callback [description]
+ */
 function CreateTable (table, params, callback) {
 
-    dynamodb.createTable(params, function(err, data) {
+    db.dbParent.createTable(params, function(err, data) {
 
         // validate the table was created successfully
         if (err) {
@@ -90,12 +93,16 @@ function CreateTable (table, params, callback) {
 
 }
 
+/**
+ * Drop a table
+ * @param {string} table drops a table and all data within
+ */
 function DeleteTable(table) {
     var params = {
         TableName : table
     };
 
-    dynamodb.deleteTable(params, function(err, data) {
+    db.dbParent.deleteTable(params, function(err, data) {
         if (err) {
             console.error("Unable to delete table. Error JSON:", JSON.stringify(err, null, 2));
         } else {
