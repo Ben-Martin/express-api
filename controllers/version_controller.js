@@ -7,24 +7,42 @@ var express = require('express'),
 
 // Get all locations
 router.get('/', function(req, res, next) {
-    
-    res.json({ 
-        api_version: version.version,
-        build: 'test'
+
+    version.getVersion(function(data) {
+        // this data needs to be formatted correctly
+        if (!data) {
+            res.json({
+                error: 'something went bad'
+            });   
+        }
+        else {
+            res.json({
+                data: data
+            });
+        }
     });
 
 });
 
 router.post('/', function(req, res, next) {
 
-    version.setVersion(req.body.version, onComplete);
-
-    function onComplete(data) {
+    // make this error a generic thing!
+    if (!req.body.version) {
         res.json({ 
-            version: data.version,
-            date: moment(data.date).format('L')
+            error: "missing parameter: version"
         });
-    } 
+    }
+    else {
+        version.setVersion(req.body.version, function onComplete(data) {
+            res.json({ 
+                version: data.version,
+                datetime: moment(data.datetime).format('L')
+            });
+        });
+    }
+    
+
+    
    
 });
 

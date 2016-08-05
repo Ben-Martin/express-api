@@ -27,9 +27,11 @@ CreateVersionTable = function(callback) {
         TableName : tableName,
         KeySchema: [       
             { AttributeName: 'version', KeyType: "HASH"},  //Partition key
+            { AttributeName: 'datetime', KeyType: "RANGE"}
         ],
         AttributeDefinitions: [       
-            { AttributeName: 'version', AttributeType: 'N' }
+            { AttributeName: 'version', AttributeType: 'N' },
+            { AttributeName: 'datetime', AttributeType: 'N' }
         ],
         ProvisionedThroughput: {       
             ReadCapacityUnits: 5, 
