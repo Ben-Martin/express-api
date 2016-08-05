@@ -1,6 +1,6 @@
 var express = require('express'),
     router = express.Router(),
-    migration = require('../models/migration.js'),
+    migration = require('../models/Migration.js'),
     bodyParser = require('body-parser'),
     cfg = require('../config');
 

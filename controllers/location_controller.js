@@ -1,6 +1,6 @@
 var express = require('express'),
     router = express.Router(),
-    location = require('../models/location.js'),
+    location = require('../models/Location.js'),
     bodyParser = require('body-parser'),
     cfg = require('../config');
 

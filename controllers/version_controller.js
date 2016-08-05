@@ -1,6 +1,6 @@
 var express = require('express'),
     router = express.Router(),
-    version = require('../models/version.js'),
+    version = require('../models/Version.js'),
     bodyParser = require('body-parser'),
     cfg = require('../config'),
     moment =require('moment');

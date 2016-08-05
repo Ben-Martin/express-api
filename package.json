@@ -19,7 +19,7 @@
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.0"
   },
-  "repository": "https://github.com/Ben-Martin/dynamo-db.git",
+  "repository": "https://github.com/Ben-Martin/express-api.git",
   "description": "a basic api using dynamo-db as the backend",
   "devDependencies": {
     "nodemon": "^1.10.0"
