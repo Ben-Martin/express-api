@@ -1,5 +1,21 @@
 
+var AWS = require("aws-sdk");
+var cfg = require("./../config");
 
-config.region = "ap-southeast-2";
-config.endpoint = "http://localhost:8000";
-config.version = 0.1;
+var VersionTable = 'Version';
+var LocationsTable = 'LocationData';
+
+module.exports.init = function() {
+    
+    AWS.config.update({
+        region: "ap-southeast-2",
+        endpoint: cfg.databaseEndpoint
+    });
+
+    this.versionTable = VersionTable;
+    this.locationsTable = LocationsTable;
+
+    this.dbClient = new AWS.DynamoDB.DocumentClient();
+
+    return this;
+};

@@ -1,12 +1,4 @@
-var AWS = require("aws-sdk");
-var cfg = require("./../config");
 
-AWS.config.update({
-    region:cfg.region,
-    endpoint: cfg.endpoint
-});
-
-var docClient = new AWS.DynamoDB.DocumentClient();
 
 /*
 TODO: list
@@ -20,7 +12,11 @@ TODO: list
     Correct storage of dates including region (UTC)
  */
 
-var table = "LocationData";
+var db = require('./../config/database').init();
+
+function Locationtable() {
+    return db.locationsTable;
+ }
 
 // user object - this should be a global object based on identity
 function User(user_guid) {
@@ -56,7 +52,7 @@ function GetLocations(user, startDate, endDate, callback) {
     var epochEndDate = GetEpoch(endDate);
 
     var params = {
-        TableName : table,
+        TableName : Locationtable(),
         KeyConditionExpression: "user_guid = :user_guid and #dstamp between :startDate and :endDate",
         ExpressionAttributeNames:{
             "#dstamp": "datetime"
@@ -69,7 +65,7 @@ function GetLocations(user, startDate, endDate, callback) {
     };
     
     // move this to a seperate function
-    docClient.query(params, function(err, data) {
+    db.dbClient.query(params, function(err, data) {
         if (err) {
             console.log(err, err.stack); 
             callback(err); // this error should be generic
@@ -92,7 +88,7 @@ SaveLocations = function(user, location) {
     console.log('adding item : ' + date);
 
     var params = {
-        TableName:table,
+        TableName:Locationtable(),
         Item:{
             "user_guid": user, // pull this from a token
             "datetime": date,
@@ -110,7 +106,7 @@ SaveLocations = function(user, location) {
         }
     };
 
-    docClient.put(params, function(err, data) {
+    db.dbClient.put(params, function(err, data) {
         if (err) {
             console.log("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             return false;

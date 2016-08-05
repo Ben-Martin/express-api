@@ -1,14 +1,5 @@
-var AWS = require("aws-sdk");
-var cfg = require("./../config");
 
-AWS.config.update({
-    region:cfg.region,
-    endpoint: cfg.endpoint
-});
-
-var docClient = new AWS.DynamoDB.DocumentClient();
-
-var table = 'Version'; // add to global
+var db = require('./../config/database').init();
 
 function ApiVersion(version, datetime) {
     this.version = version;
@@ -16,12 +7,17 @@ function ApiVersion(version, datetime) {
     return this;
 }
 
+function VersionTable() {
+    return db.versionTable;
+}
+
 function GetVersion (callback) {
+
     var params = {
-        TableName : table
+        TableName : VersionTable()
     };
 
-    docClient.scan(params, function(err, data) {
+    db.dbClient.scan(params, function(err, data) {
         if (err) {
             console.log("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             callback(err);
@@ -45,20 +41,18 @@ function SetVersion (version, callback) {
 
     var datetime = Math.floor((new Date()).getTime()/1000);
 
-    console.log('add date ' + datetime);
-
     // this should be read from the db to validate?
     var ver = new ApiVersion(version, datetime);
 
     var params = {
-        TableName:table,
+        TableName: VersionTable(),
         Item:{
             "version": round(version, 2),
             "datetime": datetime
         }
     };
 
-    docClient.put(params, function(err, data) {
+    db.dbClient.put(params, function(err, data) {
         if (err) {
             console.log("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             callback(err);
