@@ -6,10 +6,14 @@ var express = require('express'),
 
 // Get all locations
 router.get('/', function(req, res, next) {
+
+    migration.createVersionTable(onComplete);
     
-    res.json({ 
-        message: migration.createLocationsTable()
-    });
+    function onComplete(data) {
+        res.json({
+            versiontable: data
+        });
+    }
 
 });
 
