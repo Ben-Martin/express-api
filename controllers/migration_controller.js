@@ -4,16 +4,25 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     cfg = require('../config');
 
-// Get all locations
-router.get('/', function(req, res, next) {
+// Create version table
+router.get('/version', function(req, res, next) {
 
-    migration.createVersionTable(onComplete);
-    
-    function onComplete(data) {
+    migration.createVersionTable(function(data) {
         res.json({
             versiontable: data
         });
-    }
+    });
+
+});
+
+// Create locations table
+router.get('/locations', function(req, res, next) {
+
+    migration.createLocationsTable(function(data) {
+        res.json({
+            versiontable: data
+        });
+    });
 
 });
 
