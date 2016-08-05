@@ -13,15 +13,31 @@ var Version = 1.0;
 
 var table = 'Version'; // add to global
 
+function GetVersion (callback) {
+
+}
+
+function ApiVersion(version, date) {
+    this.version = version;
+    this.date = date;
+    return this;
+}
+
 function SetVersion (version, callback) {
     if (!version) {
         version = cfg.version;
     }
 
+    var date = Date.now();
+
+    // this should be read from the db?
+    var ver = new ApiVersion(version, date);
+
     var params = {
         TableName:table,
         Item:{
             "version": version,
+            "date": date
         }
     };
 
@@ -31,13 +47,14 @@ function SetVersion (version, callback) {
             callback(err);
         } else {
             console.log("Added item:", JSON.stringify(data, null, 2));
-            callback(version);
+            callback(ver);
         }
     });
-    
+
 }
 
 module.exports = {
     version: Version,
+    getVersion: GetVersion,
     setVersion: SetVersion
 };

@@ -2,7 +2,8 @@ var express = require('express'),
     router = express.Router(),
     version = require('../models/version.js'),
     bodyParser = require('body-parser'),
-    cfg = require('../config');
+    cfg = require('../config'),
+    moment =require('moment');
 
 // Get all locations
 router.get('/', function(req, res, next) {
@@ -20,7 +21,8 @@ router.post('/', function(req, res, next) {
 
     function onComplete(data) {
         res.json({ 
-            version: data
+            version: data.version,
+            date: moment(data.date).format('L')
         });
     } 
    
