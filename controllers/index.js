@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express'),
+    router = express.Router();
 
 router.use('/locations', require('./location_controller'));
 router.use('/migrations', require('./migration_controller'));
