@@ -1,8 +1,6 @@
 var express = require('express'),
     router = express.Router(),
     location = require('./../models/Location.js'),
-    bodyParser = require('body-parser'),
-    cfg = require('../config'),
     userModel = require('./../models/User');
 
 // Get locations based on date range
