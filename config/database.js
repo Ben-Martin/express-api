@@ -15,8 +15,6 @@ module.exports.init = function() {
     AWS.config.update({
         region: "ap-southeast-2",
         endpoint: cfg.databaseEndpoint,
-        accessKeyId: "AKIAJPSHAO3Q4CJX72RA",
-        secretAccessKey: "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"
     });
 
     this.versionTable = VersionTable;
