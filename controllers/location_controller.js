@@ -1,7 +1,7 @@
 var express = require('express'),
     router = express.Router(),
-    location = require('./../models/Location'),
-    userModel = require('./../models/User');
+    location = require('../models/Location'),
+    userModel = require('../models/User');
 
 // Get locations based on date range
 router.get('/', function(req, res, next) {

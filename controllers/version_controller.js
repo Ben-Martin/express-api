@@ -1,6 +1,6 @@
 var express = require('express'),
     router = express.Router(),
-    version = require('../models/Version.js'),
+    version = require('../models/Version'),
     moment =require('moment');
 
 // Get all locations
