@@ -6,38 +6,38 @@ var express = require('express'),
 // Get all locations
 router.get('/', function(req, res, next) {
 
-    version.getVersion(function(data) {
-        // this data needs to be formatted correctly
-        if (!data) {
-            res.json({
-                error: 'something went bad'
-            });   
-        }
-        else {
-            res.json({
-                data: data
-            });
-        }
+    version.getVersion(function(err, data, status) {
+
+        res.status(status);
+        res.json(err || data);
+
     });
 
 });
 
 router.post('/', function(req, res, next) {
 
+    version.setVersion(req.body.version, function(err, data, status) {
+
+        res.status(status);
+        res.json(err || data);
+
+    });
+
     // make this error a generic thing!
-    if (!req.body.version) {
-        res.json({ 
-            error: "missing parameter: version"
-        });
-    }
-    else {
-        version.setVersion(req.body.version, function onComplete(data) {
-            res.json({ 
-                version: data.version,
-                datetime: moment(data.datetime).format('L')
-            });
-        });
-    }
+    // if (!req.body.version) {
+    //     res.json({ 
+    //         error: "missing parameter: version"
+    //     });
+    // }
+    // else {
+    //     version.setVersion(req.body.version, function onComplete(data) {
+    //         res.json({ 
+    //             version: data.version,
+    //             datetime: moment(data.datetime).format('L')
+    //         });
+    //     });
+    // }
    
 });
 

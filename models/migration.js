@@ -13,7 +13,7 @@ CreateVersionTable = function(callback) {
 
     // create version table
     var params = {
-        TableName : 'VersionTable',
+        TableName : db.versionTable(),
         KeySchema: [       
             { AttributeName: 'version', KeyType: "HASH"},  //Partition key
             { AttributeName: 'datetime', KeyType: "RANGE"}
@@ -35,7 +35,7 @@ CreateVersionTable = function(callback) {
 CreateLocationsTable = function(callback) {
     // LocationData
     var params = {
-        TableName : 'LocationTable',
+        TableName : db.locationsTable(),
         KeySchema: [       
             { AttributeName: 'user_guid', KeyType: "HASH"},  //Partition key
             { AttributeName: 'datetime', KeyType: "RANGE" }  //Sort key

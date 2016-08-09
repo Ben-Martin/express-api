@@ -1,7 +1,7 @@
 
-var AWS = require("aws-sdk");
-var cfg = require("./../config");
-var api = require('./../controllers/api');
+var AWS = require("aws-sdk"),
+    cfg = require("./../config"),
+    api = require('./../controllers/api');
 
 AWS.config.update({
     region: "ap-southeast-2",
@@ -10,6 +10,14 @@ AWS.config.update({
 
 var dbParent = new AWS.DynamoDB();
 var dbClient = new AWS.DynamoDB.DocumentClient();
+
+function VersionTable() {
+    return 'Version';
+}
+
+function LocationsTable() {
+    return 'LocationData';
+}
 
 /**
  * Query the database based on the params provided
@@ -24,14 +32,45 @@ function Query(params, callback) {
             callback(error, [], 500);
         } 
         else {
-            console.log(data);
-            callback([], data, 200);
+            console.log('Query data : ', data);
+            callback(err, data, 200);
         }   
     });
 }
 
+/**
+ * [Put description]
+ * @param {[type]}   params   [description]
+ * @param {Function} callback [description]
+ */
+function Put(params, callback) {
+    dbClient.put(params, function(err, data) {
+        if (err) {
+            console.log("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+            var error = api.error('error', 'could not update the database'); // make these more generic - abstract an additional layer
+            callback(error, [], 500);
+        } else {
+            console.log("Added item :", JSON.stringify(data, null, 2));
+            callback(err, data, 200);
+        }
+    });
+}
+
+/**
+ * [Scan description]
+ * @param {[type]}   params   [description]
+ * @param {Function} callback [description]
+ */
 function Scan(params, callback) {
-    // to be implemented
+     dbClient.scan(params, function(err, data) {
+        if (err) {
+            console.log("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+            callback(err, [], 500);
+        } else {
+            console.log("Item read: ", JSON.stringify(data, null, 2));
+            callback(err, data.Items, 200);
+        }
+    });
 }
 
 /**
@@ -83,8 +122,12 @@ function DeleteTable(table) {
 // fix this mess!
 module.exports.init = function() {
 
+    this.versionTable = VersionTable;
+    this.locationsTable = LocationsTable;
+
     this.query = Query;
     this.scan = Scan;
+    this.put = Put;
     this.createTable = CreateTable;
     this.deleteTable = DeleteTable;
 

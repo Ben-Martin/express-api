@@ -9,6 +9,7 @@ router.get('/', function(req, res, next) {
     var user = userModel.user('abc123'); // temp setting of user_guid for now until auth is implemented
 
     location.getLocations(user, req.query.startDate, req.query.endDate, function(err, data, status) {
+        
         res.status(status);
         res.json(err || data);
 
