@@ -9,6 +9,8 @@ var middleware = require('./controllers/middleware_controller');
 
 var controllers = require('./controllers');
 
+var api = require('./controllers/api');
+
 var app = express();
 
 // view engine setup
@@ -26,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // add middleware for inspecting all calls
-app.use(middleware());
+// app.use(middleware());
 app.use('/', controllers);
 
 
@@ -48,10 +50,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'dev') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+    res.json( api.error('error', err.message));
   });
 }
 
@@ -59,10 +58,11 @@ if (app.get('env') === 'dev') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  res.json( api.error('error', err.message));
+  // res.render('error', {
+  //   message: err.message,
+  //   error: {}
+  // });
 });
 
 
