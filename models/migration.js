@@ -1,7 +1,8 @@
 
 
 
-var db = require('./../config/database').init();
+var db = require('./../config/database').init(),
+    api = require('./../controllers/api');
 var logName = 'MIGRATION : ';
 
 /**
@@ -10,14 +11,9 @@ var logName = 'MIGRATION : ';
 
 CreateVersionTable = function(callback) {
 
-    var tableName = db.versionTable();
-
-    console.log(logName + 'deleting table ' + tableName);
-    DeleteTable(tableName);
-
-    // LocationData
+    // create version table
     var params = {
-        TableName : tableName,
+        TableName : 'VersionTable',
         KeySchema: [       
             { AttributeName: 'version', KeyType: "HASH"},  //Partition key
             { AttributeName: 'datetime', KeyType: "RANGE"}
@@ -32,16 +28,14 @@ CreateVersionTable = function(callback) {
         }
     };
 
-    CreateTable(tableName, params, function onComplete(data) {
-        callback(data);
-    });
+    db.createTable(params, callback);
     
 };
 
 CreateLocationsTable = function(callback) {
     // LocationData
     var params = {
-        TableName : 'LocationData',
+        TableName : 'LocationTable',
         KeySchema: [       
             { AttributeName: 'user_guid', KeyType: "HASH"},  //Partition key
             { AttributeName: 'datetime', KeyType: "RANGE" }  //Sort key
@@ -55,59 +49,20 @@ CreateLocationsTable = function(callback) {
             WriteCapacityUnits: 5
         }
     };
+    db.createTable(params, callback);
+    //  {
+    //     if (err) {
+    //         console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
+    //         callback(err);
+    //     } else {
+    //         console.log("Created table. Table description JSON:", JSON.stringify(data, null, 2));
+    //         callback(data);
+    //     }
+    // });
 
-    dynamodb.createTable(params, function(err, data) {
-        if (err) {
-            console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
-            callback(err);
-        } else {
-            console.log("Created table. Table description JSON:", JSON.stringify(data, null, 2));
-            callback(data);
-        }
-    });
-
-    return 'ok';
+    // return 'ok';
     
 };
-
-/**
- * Create a table
- * @param {string}   table    table name
- * @param {Params}   params   detail for the table to be created
- * @param {Function} callback [description]
- */
-function CreateTable (table, params, callback) {
-
-    db.dbParent.createTable(params, function(err, data) {
-
-        // validate the table was created successfully
-        if (err) {
-            callback(err);
-            console.error("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            callback('ok');
-        }
-    });
-
-}
-
-/**
- * Drop a table
- * @param {string} table drops a table and all data within
- */
-function DeleteTable(table) {
-    var params = {
-        TableName : table
-    };
-
-    db.dbParent.deleteTable(params, function(err, data) {
-        if (err) {
-            console.error("Unable to delete table. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("Deleted table. Table description JSON:", JSON.stringify(data, null, 2));
-        }
-    });
-}
 
 
 module.exports = {

@@ -1,16 +1,14 @@
 var express = require('express'),
     router = express.Router(),
-    migration = require('../models/Migration.js'),
-    bodyParser = require('body-parser'),
-    cfg = require('../config');
+    migration = require('../models/Migration.js');
 
 // Create version table
 router.get('/version', function(req, res, next) {
 
-    migration.createVersionTable(function(data) {
-        res.json({
-            versiontable: data
-        });
+    migration.createVersionTable(function(err, data, status) {
+        res.status(status);
+        res.json( err || data);
+
     });
 
 });
@@ -18,10 +16,10 @@ router.get('/version', function(req, res, next) {
 // Create locations table
 router.get('/locations', function(req, res, next) {
 
-    migration.createLocationsTable(function(data) {
-        res.json({
-            versiontable: data
-        });
+    migration.createLocationsTable(function(err, data, status) {
+        res.status(status);
+        res.json( err || data);
+
     });
 
 });
