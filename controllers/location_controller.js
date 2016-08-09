@@ -5,24 +5,14 @@ var express = require('express'),
 
 // Get locations based on date range
 router.get('/', function(req, res, next) {
-    
-    // make this error a generic thing!
-    if (!req.query.startDate || !req.query.endDate) {
-        res.json({ 
-            error: "missing parameter: startDate and endDate must be provided."
-        });
-    }
-    else {
 
-        var user = userModel.user('abc123');
-        location.getLocations(user, req.query.startDate, req.query.endDate, onComplete);
-    }
+    var user = userModel.user('abc123'); // temp setting of user_guid for now until auth is implemented
 
-    function onComplete(data) { // When the code completes, do this
-       res.json({ 
-            message: data
-        });
-    }
+    location.getLocations(user, req.query.startDate, req.query.endDate, function(err, data, status) {
+        res.status(status);
+        res.json(err || data);
+
+    });
 
 });
 

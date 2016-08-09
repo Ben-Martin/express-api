@@ -10,7 +10,8 @@ TODO: list
     Correct storage of dates including region (UTC)
  */
 
-var db = require('./../config/database').init();
+var db = require('./../config/database').init(),
+    api = require('./../controllers/api');
 
 
 // location object
@@ -36,10 +37,18 @@ function Location(longitude, latitude, speed, course, altitude, timestamp, true_
  * @param {Function} callback   callback once data is received from the db
  */
 function GetLocations(user, startDate, endDate, callback) {
+
+    // check to ensure valid data has been sent
+    if (!startDate || !endDate) {
+        var error = api.error('missing params', 'startDate and endDate must be provided.');
+        callback(error, [], 400);
+    }
     
+    // correct the date / time values
     var epochStartDate = GetEpoch(startDate);
     var epochEndDate = GetEpoch(endDate);
 
+    // construct the db query - ideally this should be moved
     var params = {
         TableName : db.locationsTable(),
         KeyConditionExpression: "user_guid = :user_guid and #dstamp between :startDate and :endDate",
@@ -53,17 +62,8 @@ function GetLocations(user, startDate, endDate, callback) {
         }
     };
     
-    // move this to a seperate function
-    db.dbClient.query(params, function(err, data) {
-        if (err) {
-            console.log(err, err.stack); 
-            callback(err); // this error should be generic
-        } 
-        else {
-            console.log(data);
-            callback(data); 
-        }   
-    });
+    db.query(params, callback);
+
 }
 
 /**

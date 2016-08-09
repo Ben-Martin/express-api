@@ -1,0 +1,114 @@
+// Design
+
+/**
+ * VERSION - summary
+ * GET ../version
+ * POST ../version
+ * PUT ../version/:id
+ * DEL ../version/:id
+ */
+// GET ../version
+{
+    "meta": [
+        {
+            "total": 1,
+            "count": 1,
+            "offset": 0,
+            "error": null
+        }
+    ],
+    "data": [
+        {
+            "id": 1,
+            "date": "2015-01-01",
+            "version": "1.0"
+        }
+    ]   
+}
+
+// POST ../version
+// body:
+//  date = 2015-01-01
+//  version = 1.0
+
+// Response - 201 created
+{
+    "links": [
+        {
+            "self" : { "href": "/version/:id" }
+        }
+    ]
+}
+
+// PUT ../version/:id
+// body
+//  date = 2015-01-01
+//  version = 1.1
+// Response - 200 ok
+
+// DEL ../version/:id
+// Resonose - 200 ok
+
+
+
+/**
+ * LOCATIONS - summary
+ * GET ../locations?startdate=[date]&enddate=[date]&user=[user_guid]
+ * POST ../locations
+ * PUT ../locations/:id
+ * DEL ../locations/:id
+ */
+
+// GET ../locations?startdate=[date]&enddate=[date]&user=[user_guid]
+{
+    "meta": [
+        { /* ... meta object ... */ }
+    ],
+    "data": [
+        {
+            "id": 1,
+            // ... location object ...
+        }
+    ]   
+}
+
+// POST ../locations
+// body
+//  Location object
+// Response - 201 created
+{
+    "links": [
+        {
+            "self" : { "href": "/locations/:id" }
+        }
+    ]
+}
+
+// PUT ../locations/:id
+// body
+//  location object
+// Response - 200 ok
+
+// DEL ../locations/:id
+// Resonose - 200 ok
+
+
+/**
+ * ERRORS
+ * 500 - server error
+ * 404 - not found
+ * 400 - missing or wrong data / bad request
+ * 401 - unauthorised
+ * 501 - not implemented
+ */
+{
+    "meta": [
+        {
+            "total": 0,
+            "count": 0,
+            "offset": 0,
+            "error": "error message"
+        }
+    ],
+    "data": []   
+}
